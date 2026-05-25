@@ -1,0 +1,35 @@
+name: WebRTC Release
+
+env:
+  XCODE_VERSION: 26.5
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * *"
+
+jobs:
+  Build-Script:
+    runs-on: macos-26
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+
+      - name: Setup Xcode
+        run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --upgrade -r requirements.txt
+
+      - name: Running WebRTC release checks
+        run: |
+          sh scripts/clean.sh
+          sh scripts/release.sh
