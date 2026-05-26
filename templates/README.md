@@ -1,6 +1,6 @@
 # WebRTC Binaries for iOS and macOS
 
-[![WebRTC Release](https://github.com/%{repo}%/actions/workflows/release.yml/badge.svg)](https://github.com/%{repo}%/actions/workflows/release.yml)
+[![WebRTC](https://github.com/%{repo}%/actions/workflows/release.yml/badge.svg)](https://github.com/%{repo}%/actions/workflows/release.yml)
 [![Latest version](https://img.shields.io/github/v/release/%{repo}%)](https://github.com/%{repo}%/releases)
 [![Release Date](https://img.shields.io/github/release-date/%{repo}%)](https://github.com/%{repo}%/releases)
 
