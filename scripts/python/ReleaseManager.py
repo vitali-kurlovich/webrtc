@@ -68,7 +68,15 @@ class ReleaseManager:
 
         self.artifactDir = artifactDir
 
+    def _checkBranch(self):
+        self.logger.info("Fetch next version...")
+        nextRelease = self._getNextRelease()
+        self.logger.info(f"Check new release ({nextRelease})")
+
+
     def run(self):
+        self._checkBranch()
+        os._exit(os.EX_OK)
 
         self.logger.info("Fetch next version...")
         nextRelease = self._getNextRelease()
@@ -249,7 +257,7 @@ class ReleaseManager:
             branch=nextReleaseBranch,
         )
 
-    def _isReleaseAvailable(self, release):
+    def _isReleaseAvailable(self, release:NextReleaseResult):
         return datetime.today() >= (release.releaseDate + timedelta(days=1))
 
     def _buildMetadata(self, outputDir: str):
