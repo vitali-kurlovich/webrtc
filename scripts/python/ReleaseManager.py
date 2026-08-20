@@ -5,14 +5,15 @@ import subprocess
 from datetime import datetime, timedelta
 
 import git
-from . import namefactory
-from . import NextReleaseResult
 import requests
 from chromiumdash import ChromiumdashRepository
 from githubapi import GitHubApiRepository
 from Metadata import Metadata
+from namefactory import NameFactory
 from template import TemplateBuilder
 from typing_extensions import final
+
+from . import NextReleaseResult
 
 
 class ReleaseManagerException(Exception):
@@ -117,7 +118,6 @@ class ReleaseManager:
         self.logger.info(
             f"Checking if release {nextRelease} exists in the Git repository."
         )
-
         branchName = self.nameFactory.releaseBranchName(nextRelease)
         if git.existsRemoteBranch(branchName):
             self.logger.info(f"Release exists in origin/{branchName}. Skipping build")
