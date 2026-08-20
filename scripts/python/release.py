@@ -2,7 +2,8 @@ import logging
 import os
 import sys
 
-from . import ReleaseManager
+from ReleaseManager import ReleaseManager
+
 
 def main():
     logging.basicConfig(

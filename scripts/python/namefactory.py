@@ -1,6 +1,6 @@
+from NextReleaseResult import NextReleaseResult
 from typing_extensions import final
 
-from . import NextReleaseResult
 
 @final
 class NameFactory:
@@ -14,4 +14,4 @@ class NameFactory:
         return f"{self.major}.{release.version}.{self.patch}"
 
     def releaseBranchName(self, release: NextReleaseResult):
-         return f"release-v{nextRelease.version}"
+        return f"release-v{nextRelease.version}"

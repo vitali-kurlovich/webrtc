@@ -10,10 +10,9 @@ from chromiumdash import ChromiumdashRepository
 from githubapi import GitHubApiRepository
 from Metadata import Metadata
 from namefactory import NameFactory
+from NextReleaseResult import NextReleaseResult
 from template import TemplateBuilder
 from typing_extensions import final
-
-from . import NextReleaseResult
 
 
 class ReleaseManagerException(Exception):
