@@ -1,8 +1,6 @@
 from NextReleaseResult import NextReleaseResult
-from typing_extensions import final
 
 
-@final
 class NameFactory:
     def __init__(self, major: str, patch: str):
         super().__init__()

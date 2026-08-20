@@ -12,7 +12,6 @@ from Metadata import Metadata
 from namefactory import NameFactory
 from NextReleaseResult import NextReleaseResult
 from template import TemplateBuilder
-from typing_extensions import final
 
 
 class ReleaseManagerException(Exception):
@@ -29,7 +28,6 @@ class ShellException(Exception):
         return f"{self.message} return: ({self.code})"
 
 
-@final
 class ReleaseManager:
     def __init__(self, major: str, patch: str):
         super().__init__()
