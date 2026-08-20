@@ -46,21 +46,19 @@ def push(branch: str):
 
 
 def existsRemoteBranch(name: str):
-    out = remoteBranches()
-    _logger.info(out)
     gitPipe = subprocess.Popen(["git", "branch", "-r"], stdout=subprocess.PIPE)
     grepPipe = subprocess.Popen(
-       ["grep", f"origin/{name}"],
-       stdin=gitPipe.stdout,
-       stdout=subprocess.PIPE,
-       text=True,
+        ["grep", f"origin/{name}"],
+        stdin=gitPipe.stdout,
+        stdout=subprocess.PIPE,
+        text=True,
     )
     gitPipe.stdout.close()
     output, _ = grepPipe.communicate()
 
     _logger.info(output)
 
-    return output.strip() == f'origin/{name}'
+    return output.strip() == f"origin/{name}"
 
 
 def remoteBranches():
