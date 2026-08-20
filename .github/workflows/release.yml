@@ -32,7 +32,6 @@ jobs:
       - name: Git commands
         run: |
             git fetch --unshallow
-            git ls-remote --heads origin
             git branch -r
 
       - name: Running WebRTC release checks
