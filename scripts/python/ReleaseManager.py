@@ -112,10 +112,12 @@ class ReleaseManager:
             )
 
     def _checkBranch(self, nextRelease: NextReleaseResult):
-        self.logger.info(
-            f"Checking if release {nextRelease} exists in the Git repository."
-        )
         branchName = self.nameFactory.releaseBranchName(nextRelease)
+
+        self.logger.info(
+            f"Checking if release {branchName} exists in the Git repository."
+        )
+
         if git.existsRemoteBranch(branchName):
             self.logger.info(f"Release exists in origin/{branchName}. Skipping build")
             os._exit(os.EX_OK)
