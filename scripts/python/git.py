@@ -45,13 +45,32 @@ def push(branch: str):
     _run(["push", "origin", branch])
 
 
-def _run(args: list):
+def existsRemoteBranch(name: str):
+    gitPipe = subprocess.Popen(["git", "branch", "-r"], stdout=subprocess.PIPE)
+    grepPipe = subprocess.Popen(
+        ["grep", f"origin/{name}"],
+        stdin=gitPipe.stdout,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    gitPipe.stdout.close()
+    output, _ = grepPipe.communicate()
+    return output.strip() == f"origin/{name}"
+
+
+def remoteBranches():
+    _run(["branch", "-r"])
+
+
+def _run(args: list[str]):
     cmd = ["git"]
     cmd.extend(args)
     _logger.info(" ".join(cmd))
 
-    process = subprocess.run(cmd)
+    process = subprocess.run(cmd, capture_output=True, text=True)
     returncode = process.returncode
+
     if returncode != 0:
         _logger.error(f"Non zero execution result. {returncode}")
         raise Exception(f"Non zero execution result. {returncode}")
+    return process.stdout

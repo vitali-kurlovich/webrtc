@@ -2,22 +2,17 @@ import json
 import logging
 import os
 import subprocess
-from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 import git
+from . import namefactory
+from . import NextReleaseResult
 import requests
 from chromiumdash import ChromiumdashRepository
 from githubapi import GitHubApiRepository
 from Metadata import Metadata
 from template import TemplateBuilder
-
-
-@dataclass
-class NextReleaseResult:
-    version: int
-    releaseDate: datetime
-    branch: str
+from typing_extensions import final
 
 
 class ReleaseManagerException(Exception):
@@ -34,6 +29,7 @@ class ShellException(Exception):
         return f"{self.message} return: ({self.code})"
 
 
+@final
 class ReleaseManager:
     def __init__(self, major: str, patch: str):
         super().__init__()
@@ -51,6 +47,7 @@ class ReleaseManager:
         self.patch = patch
         self.gitHubApi = GitHubApiRepository(repo=GITHUB_REPO, token=GITHUB_TOKEN)
         self.chromiumDashApi = ChromiumdashRepository()
+        self.nameFactory = NameFactory(major=major, patch=patch)
 
         self.isDebug = os.environ.get("BUILD_DEBUG") == "1"
 
@@ -68,18 +65,11 @@ class ReleaseManager:
 
         self.artifactDir = artifactDir
 
-    def _checkBranch(self):
-        self.logger.info("Fetch next version...")
-        nextRelease = self._getNextRelease()
-        self.logger.info(f"Check new release ({nextRelease})")
-
-
     def run(self):
-        self._checkBranch()
-        os._exit(os.EX_OK)
 
         self.logger.info("Fetch next version...")
         nextRelease = self._getNextRelease()
+        self._checkBranch(nextRelease)
 
         if not self._isReleaseAvailable(nextRelease):
             self.logger.info("Next version is not out yet. Skipping build")
@@ -123,8 +113,15 @@ class ReleaseManager:
                 f"Build script return non-zero exit code: {result}", result
             )
 
-    def _tagRelease(self, release: NextReleaseResult):
-        return f"{self.major}.{release.version}.{self.patch}"
+    def _checkBranch(self, nextRelease: NextReleaseResult):
+        self.logger.info(
+            f"Checking if release {nextRelease} exists in the Git repository."
+        )
+
+        branchName = self.nameFactory.releaseBranchName(nextRelease)
+        if git.existsRemoteBranch(branchName):
+            self.logger.info(f"Release exists in origin/{branchName}. Skipping build")
+            os._exit(os.EX_OK)
 
     def _createReleaseDraft(self, release: NextReleaseResult, metadata: Metadata):
         body = f"Release notes: https://webrtc.googlesource.com/src.git/+log/refs/{metadata.branch}/\n"
@@ -132,7 +129,7 @@ class ReleaseManager:
         body += f"WebRTC Commit: `{metadata.commit}`\n\n"
         body += f"SHA 256 checksum: `{metadata.checksum}`\n"
 
-        tag = self._tagRelease(release)
+        tag = self.nameFactory.tagRelease(release)
 
         fields = {
             "name": f"v{release.version}",
@@ -154,7 +151,7 @@ class ReleaseManager:
         )
 
     def _createLocalBranch(self, nextRelease: NextReleaseResult):
-        releaseBranch = f"release-v{nextRelease.version}"
+        releaseBranch = self.nameFactory.releaseBranchName(release=nextRelease)
         self.logger.info(f"Creating local branch: {releaseBranch}")
         git.checkout(releaseBranch)
         return releaseBranch
@@ -171,7 +168,7 @@ class ReleaseManager:
 
         baseUrl = f"https://github.com/{self.repo}"
 
-        tag = self._tagRelease(release)
+        tag = self.nameFactory.tagRelease(release)
 
         url = f"{baseUrl}/releases/download/{tag}/{assetName}"
 
@@ -257,7 +254,7 @@ class ReleaseManager:
             branch=nextReleaseBranch,
         )
 
-    def _isReleaseAvailable(self, release:NextReleaseResult):
+    def _isReleaseAvailable(self, release: NextReleaseResult):
         return datetime.today() >= (release.releaseDate + timedelta(days=1))
 
     def _buildMetadata(self, outputDir: str):
