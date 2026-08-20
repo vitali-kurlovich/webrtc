@@ -31,7 +31,7 @@ jobs:
 
       - name: Git commands
         run: |
-            git remote -v
+            git fetch --unshallow
             git ls-remote --heads origin
             git branch -r
 
