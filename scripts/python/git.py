@@ -55,7 +55,10 @@ def existsRemoteBranch(name: str):
     )
     gitPipe.stdout.close()
     output, _ = grepPipe.communicate()
-    return output.strip() == f"origin/{name}"
+
+    _logger.info(output)
+
+    return output.strip() == f'origin/{name}'
 
 
 def remoteBranches():
