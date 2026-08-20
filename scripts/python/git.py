@@ -46,7 +46,6 @@ def push(branch: str):
 
 
 def existsRemoteBranch(name: str):
-    _run(["fetch", "--unshallow"])
     out = remoteBranches()
     _logger.info(out)
     gitPipe = subprocess.Popen(["git", "branch", "-r"], stdout=subprocess.PIPE)
