@@ -189,7 +189,7 @@ class ReleaseManager:
         release: NextReleaseResult,
     ):
         template_path = f"{self.rootDir}/templates/README.md"
-        tag = self._tagRelease(release)
+        tag = self.nameFactory.tagRelease(release)
 
         builder = TemplateBuilder(template_path)
 
