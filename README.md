@@ -32,6 +32,6 @@ The binary releases correspond with official Chromium releases
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/vitali-kurlovich/webrtc.git", .upToNextMajor("0.151.0"))
+    .package(url: "https://github.com/vitali-kurlovich/webrtc.git", .upToNextMajor("0.152.0"))
 ]
 ```
