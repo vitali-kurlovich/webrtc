@@ -9,7 +9,7 @@ def checkout(branch: str):
         _logger.error("Branch name cannot be empty.")
         raise Exception("Branch name cannot be empty.")
 
-    _run(["checkout", "-b", branch])
+    _ = _run(["checkout", "-b", branch])
 
 
 def add(files):
@@ -27,14 +27,14 @@ def add(files):
         _logger.error("Argument files must be str, list or tuple")
         raise Exception("Argument files must be str, list or tuple")
 
-    _run(args)
+    _ = _run(args)
 
 
 def commit(message: str):
     if len(message) == 0:
         _logger.error("Message cannot be empty.")
         raise Exception("Message cannot be empty.")
-    _run(["commit", "-m", message])
+    _ = _run(["commit", "-m", message])
 
 
 def push(branch: str):
@@ -42,7 +42,7 @@ def push(branch: str):
         _logger.error("Branch name cannot be empty.")
         raise Exception("Branch name cannot be empty.")
 
-    _run(["push", "origin", branch])
+    _ = _run(["push", "origin", branch])
 
 
 def existsRemoteBranch(name: str):
@@ -62,7 +62,7 @@ def existsRemoteBranch(name: str):
 
 
 def remoteBranches():
-    _run(["branch", "-r"])
+    _ = _run(["branch", "-r"])
 
 
 def _run(args: list[str]):
